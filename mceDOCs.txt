@@ -1,0 +1,484 @@
+===========================================================================  
+
+	mce.cu
+	
+	(Maximal Clique Enumeration)
+
+===========================================================================  
+
+Current Version
+===========================================================================
+	Version 1.0
+	August 23, 2016
+	
+
+Description
+===========================================================================
+	mce:
+		This program will take in an adjacency matrix from a text file and 
+		perform an algorithm on a GPU device to determine all of the 
+		maximal cliques present in the matrix.
+
+		
+Libraries
+===========================================================================		
+	<iostream>: Standard input output functions
+	<stdlib.h>: Provides use of size_t data type
+	<fstream>: Read from and write to files	
+	<string>: Provides access to string data type
+	<sstream>: Provides functions for working with strings
+	<thrust/scan.h>: Provides parallel prefix scan function
+
+Set up and operation
+===========================================================================
+
+	Requirements:
+		Compute Capability 3.0 or higher GPU device
+    
+    To compile:
+    	Requires use of Nvidia's CUDA Compiler: NVCC
+			http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/#axzz4FS98r9VS
+        nvcc -arch=sm_35 -rdc=true mce.cu -o executableName
+			
+	To run from command:
+		Run executable as normal.
+		Either run in same directory as adjMatrix.txt or
+		provide full path to another adjacency matrix file by using
+			the -f parameter.
+		
+		To generate an adjacency matrix, see the adjacency.cu documentation.
+		
+		After getting the maximal cliques, you may use mcMeasure.cu to
+			calcualte a measure based on these cliques.	
+		
+		The -v parameter must correctly specify how many vertices (rows)
+			are in the adjacency matrix.
+	
+	
+	Command Line Parameters:
+		-v [int > 0]: The number of vertices in the input file
+			!!This parameter is mandatory at run time
+
+		-gpu [int >= 0]: Specify which GPU device to run device code on
+			 (must be a valid device id)
+ 
+ 		-f [full path and file name]:
+ 			Allows the user to specify a file other 
+ 			than adjMatrix.txt to be used for input
+ 
+ 		-help: Prints out all command parameters, then exits program.
+		
+	
+		
+Known Bugs and Limitations
+===========================================================================
+	
+	
+Troubleshooting
+===========================================================================
+	Ensure GPU device being used has proper compute capability (CC).
+		Program uses Unified Memory, which requires CC 3.0 or above
+
+		
+FAQ
+===========================================================================
+	Q:
+	A:
+	
+	
+Copyright and Licensing
+===========================================================================
+License	 : Licensed under the Non-Profit Open Software License version 3.0
+ 1) Grant of Copyright License. Licensor grants You a worldwide, royalty-free, 
+ non-exclusive, sublicensable license, for the duration of the copyright, to do the following:
+
+ a) to reproduce the Original Work in copies, either alone or as part of a collective work;
+
+ b) to translate, adapt, alter, transform, modify, or arrange the Original Work, thereby 
+ creating derivative works ("Derivative Works") based upon the Original Work;
+
+ c) to distribute or communicate copies of the Original Work and Derivative Works 
+ to the public, with the proviso that copies of Original Work or Derivative Works 
+ that You distribute or communicate shall be licensed under this Non-Profit Open Software 
+ License or as provided in section 17(d);
+
+ d) to perform the Original Work publicly; and
+
+ e) to display the Original Work publicly.
+
+ 2) Grant of Patent License. Licensor grants You a worldwide, royalty-free, 
+ non-exclusive, sublicensable license, under patent claims owned or controlled by
+  the Licensor that are embodied in the Original Work as furnished by the Licensor, 
+  for the duration of the patents, to make, use, sell, offer for sale, have made,
+   and import the Original Work and Derivative Works.
+
+ 3) Grant of Source Code License. The term "Source Code" means the preferred 
+ form of the Original Work for making modifications to it and all available 
+ documentation describing how to modify the Original Work. Licensor agrees to 
+ provide a machine-readable copy of the Source Code of the Original Work along 
+ with each copy of the Original Work that Licensor distributes. Licensor reserves 
+ the right to satisfy this obligation by placing a machine-readable copy of the 
+ Source Code in an information repository reasonably calculated to permit 
+ inexpensive and convenient access by You for as long as Licensor continues 
+ to distribute the Original Work.
+
+ 4) Exclusions From License Grant. Neither the names of Licensor, nor the names 
+ of any contributors to the Original Work, nor any of their trademarks or service 
+ marks, may be used to endorse or promote products derived from this Original Work 
+ without express prior permission of the Licensor. Except as expressly stated
+  herein, nothing in this License grants any license to Licensor's trademarks,
+  copyrights, patents, trade secrets or any other intellectual property. No patent 
+  license is granted to make, use, sell, offer for sale, have made, or import embodiments 
+  of any patent claims other than the licensed claims defined in Section 2. No license 
+ is granted to the trademarks of Licensor even if such marks are included in the Original
+  Work. Nothing in this License shall be interpreted to prohibit Licensor from licensing 
+  under terms different from this License any Original Work that Licensor otherwise would 
+  have a right to license.
+
+ 5) External Deployment. The term "External Deployment" means the use, distribution, or
+ communication of the Original Work or Derivative Works in any way such that the Original 
+ Work or Derivative Works may be used by anyone other than You, whether those works are 
+ distributed or communicated to those persons or made available as an application intended 
+ for use over a network. As an express condition for the grants of license hereunder, 
+ You must treat any External Deployment by You of the Original Work or a Derivative 
+ Work as a distribution under section 1(c).
+
+ 6) Attribution Rights. You must retain, in the Source Code of any Derivative Works 
+ that You create, all copyright, patent, or trademark notices from the Source Code of 
+ the Original Work, as well as any notices of licensing and any descriptive text 
+ identified therein as an "Attribution Notice." You must cause the Source Code for 
+ any Derivative Works that You create to carry a prominent Attribution Notice reasonably 
+ calculated to inform recipients that You have modified the Original Work.
+
+ 7) Warranty of Provenance and Disclaimer of Warranty. The Original Work is provided 
+ under this License on an "AS IS" BASIS and WITHOUT WARRANTY, either express or implied, 
+ including, without limitation, the warranties of non-infringement, merchantability or 
+ fitness for a particular purpose. THE ENTIRE RISK AS TO THE QUALITY OF THE ORIGINAL WORK 
+ IS WITH YOU. This DISCLAIMER OF WARRANTY constitutes an essential part of this License. 
+ No license to the Original Work is granted by this License except under this disclaimer.
+
+ 8) Limitation of Liability. Under no circumstances and under no legal theory, whether 
+ in tort (including negligence), contract, or otherwise, shall the Licensor be liable 
+ to anyone for any direct, indirect, special, incidental, or consequential damages of 
+ any character arising as a result of this License or the use of the Original Work 
+ including, without limitation, damages for loss of goodwill, work stoppage, computer 
+ failure or malfunction, or any and all other commercial damages or losses. This limitation 
+ of liability shall not apply to the extent applicable law prohibits such limitation.
+
+ 9) Acceptance and Termination. If, at any time, You expressly assented to this License, 
+ that assent indicates your clear and irrevocable acceptance of this License and all of 
+ its terms and conditions. If You distribute or communicate copies of the Original Work 
+ or a Derivative Work, You must make a reasonable effort under the circumstances to obtain 
+ the express assent of recipients to the terms of this License. This License conditions 
+ your rights to undertake the activities listed in Section 1, including your right to create 
+ Derivative Works based upon the Original Work, and doing so without honoring these terms and 
+ conditions is prohibited by copyright law and international treaty. Nothing in this License 
+ is intended to affect copyright exceptions and limitations (including "fair use" or "fair 
+ dealing"). This License shall terminate immediately and You may no longer exercise any of 
+ the rights granted to You by this License upon your failure to honor the conditions in Section 1(c).
+
+ 10) Termination for Patent Action. This License shall terminate automatically and You 
+ may no longer exercise any of the rights granted to You by this License as of the date 
+ You commence an action, including a cross-claim or counterclaim, against Licensor or any 
+ licensee alleging that the Original Work infringes a patent. This termination provision 
+ shall not apply for an action alleging patent infringement by combinations of the Original
+  Work with other software or hardware.
+
+ 11) Jurisdiction, Venue and Governing Law. Any action or suit relating to this License 
+ may be brought only in the courts of a jurisdiction wherein the Licensor resides or in 
+ which Licensor conducts its primary business, and under the laws of that jurisdiction 
+ excluding its conflict-of-law provisions. The application of the United Nations Convention 
+ on Contracts for the International Sale of Goods is expressly excluded. Any use of the Original 
+ Work outside the scope of this License or after its termination shall be subject to the 
+ requirements and penalties of copyright or patent law in the appropriate jurisdiction. 
+ This section shall survive the termination of this License.
+
+ 12) Attorneys' Fees. In any action to enforce the terms of this License or seeking 
+ damages relating thereto, the prevailing party shall be entitled to recover its costs and 
+ expenses, including, without limitation, reasonable attorneys' fees and costs incurred in 
+ connection with such action, including any appeal of such action. This section shall survive 
+ the termination of this License.
+
+ 13) Miscellaneous. If any provision of this License is held to be unenforceable, such provision 
+ shall be reformed only to the extent necessary to make it enforceable.
+
+ 14) Definition of "You" in This License. "You" throughout this License, whether in upper or 
+ lower case, means an individual or a legal entity exercising rights under, and complying with 
+ all of the terms of, this License. For legal entities, "You" includes any entity that controls, 
+ is controlled by, or is under common control with you. For purposes of this definition, "control" 
+ means (i) the power, direct or indirect, to cause the direction or management of such entity, 
+ whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding 
+ shares, or (iii) beneficial ownership of such entity.
+
+ 15) Right to Use. You may use the Original Work in all ways not otherwise restricted or conditioned
+  by this License or by law, and Licensor promises not to interfere with or be responsible for such uses by You.
+
+ 16) Modification of This License. This License is Copyright © 2005 Lawrence Rosen. 
+ Permission is granted to copy, distribute, or communicate this License without modification. 
+ Nothing in this License permits You to modify this License as applied to the Original Work or to 
+ Derivative Works. However, You may modify the text of this License and copy, distribute or communicate 
+ your modified version (the "Modified License") and apply it to other original works of authorship 
+ subject to the following conditions: (i) You may not indicate in any way that your Modified License 
+ is the "Open Software License" or "OSL" and you may not use those names in the name of your Modified 
+ License; (ii) You must replace the notice specified in the first paragraph above with the notice 
+ "Licensed under <insert your license name here>" or with a notice of your own that is not confusingly 
+ similar to the notice in this License; and (iii) You may not claim that your original works are open 
+ source software unless your Modified License has been approved by Open Source Initiative (OSI) and 
+ You comply with its license review and certification process.
+
+ 17) Non-Profit Amendment. The name of this amended version of the Open Software License ("OSL 3.0") 
+ is "Non-Profit Open Software License 3.0". The original OSL 3.0 license has been amended as follows:
+
+ (a) Licensor represents and declares that it is a not-for-profit organization that derives no revenue 
+ whatsoever from the distribution of the Original Work or Derivative Works thereof, or from support 
+ or services relating thereto.
+
+ (b) The first sentence of Section 7 ["Warranty of Provenance"] of OSL 3.0 has been stricken. For 
+ Original Works licensed under this Non-Profit OSL 3.0, LICENSOR OFFERS NO WARRANTIES WHATSOEVER.
+
+ (c) In the first sentence of Section 8 ["Limitation of Liability"] of this Non-Profit OSL 3.0, 
+ the list of damages for which LIABILITY IS LIMITED now includes "direct" damages.
+
+ (d) The proviso in Section 1(c) of this License now refers to this "Non-Profit Open Software 
+ License" rather than the "Open Software License". You may distribute or communicate the Original 
+ Work or Derivative Works thereof under this Non-Profit OSL 3.0 license only if You make the 
+ representation and declaration in paragraph (a) of this Section 17. Otherwise, You shall distribute or 
+ communicate the Original Work or Derivative Works thereof only under the OSL 3.0 license and You shall 
+ publish clear licensing notices so stating. Also by way of clarification, this License does not authorize 
+ You to distribute or communicate works under this Non-Profit OSL 3.0 if You received them under 
+ the original OSL 3.0 license.
+
+ (e) Original Works licensed under this license shall reference "Non-Profit OSL 3.0" 
+ in licensing notices to distinguish them from works licensed under the original OSL 3.0 license.
+	
+Contact Information
+===========================================================================
+	(Programmer) Jesse Harder, harder-j30@webmail.uwinnipeg.ca
+	
+	
+Acknowledgements
+===========================================================================
+	Supervisor: Dr. Christopher Henry, P. Eng.
+	
+	This research has been supported by the Natural Sciences and Engineering Research Council of Canada (NSERC) grant 418413 
+	and the Tesla K40 used in this research was donated by the NVIDIA Corporation
+	
+	Matthew C. Schmidt, Nagiza F. Samatova, Kevin Thomas, and Byung-Hoon Park
+		for their article 
+	"A scalable, parallel algorithm for maximal clique enumeration" 
+		which provided the base maximal clique algorithm  this code is derived from.
+	
+
+Classes and Structures
+===========================================================================
+class managedStruct:
+	This class is to be inherited by the graph node structure.
+	It provides a constructor that will automatically allocated the
+	structure in Unified Memory and return the pointer.
+	This class also provides a method for freeing the memory allocated 
+	by the structure.
+	
+
+struct graphNode: public managedStruct:
+ 	This structure extends from the managedStruct class.
+ 	Each graphNode structure represents one node to be processed by the
+ 	maximal clique algorithm. 
+ 	Each structure contains:
+ 		cand: An integer array of candidate neighbouring nodes' ids
+ 		cnot: An integer array of ids of nodes that are redundant to join with
+ 		compsub: An integer array of node ids that have been processed 
+ 			by this node's branch already
+ 			
+ 	Each of these three arrays must be allocated in Unified Memory in order
+ 	to be used in GPU device functions.
+ 	graphNodes serve as holders of the input and output of the
+ 	maximalCliqueEnumeration function.
+	
+
+Functions
+===========================================================================
+createNodes (GPU kernel function)
+
+This function will create the next level of nodes for the MCE algorithm,
+or output the node's compsub, if it won't produce child nodes.
+Each thread in this algorithm represents one node
+This function closely follows the Recursive Clique Enumeration algorithm
+provided in
+"A scalable, parallel algorithm for maximal clique enumeration" by
+Matthew C. Schmidt, Nagiza F. Samatova, Kevin Thomas, and Byung-Hoon Park
+
+[in]:
+		inNode: A pointer to an array of input nodes
+		outNode: A pointer to an array of nodes used for output
+		sizeArray: A prefix summed array that tells each thread where in
+			outNode to write it's results
+		maxNeighbours: The highest number of neighbours a node can possible have
+		workSize: The number of nodes to be operated on
+
+[out]:
+		outNode: Each node produced will be written to this array
+
+[return]:
+		Void
+		
+---------------------------------------------------------------------------
+isConnected
+
+This function will determine if an integer value exists in a row of a given
+array.
+
+[in]:
+		value: The value to be searched for
+		row: The row to be searched though
+		data: The array containing the data to be searched
+
+[out]:
+		None
+
+[return]:
+		True if the value is found, else false
+ 
+---------------------------------------------------------------------------
+isConnectedGPU (GPU function)
+
+This function will determine if one int is found in a list of other
+ints. Each int represents the id of a vertex
+
+[in]:
+		indexA: The first vertex id, the value to be looked for
+		indexB: The second vertex id, the index of the list to be searched though
+		maxNeighbours: The length of a row in data
+
+[out]:
+		None
+
+[return]:
+		True if the value is found, else false
+
+[notes]:
+  		This function makes use of the adjacency array which has been
+  		bound to texture memory on the device
+---------------------------------------------------------------------------
+genereateAdjacencyValues
+
+This function will populate an array with its adjacency values
+Each row represents one vertex
+The first element in a row is the count of how many neighbours that vertex has
+Each following element is an int id of a neighbouring vertex
+-1's represent nulls, or no neighbours
+The neighbours are determines by reading in a bit matrix file, wherein
+each 1 in a row represents a neighbour
+
+[in]:
+		intData: A pointer to the array to write output to
+		inFile: A string containing the name of the file to read
+
+[out]:
+		intData with all adjacency values written to it
+
+[return]:
+		Void
+
+[notes]:
+		maxNeighbours is previously determined to be the most amount of
+		neighbours any one node can have, thus maxNeighbours + 1 is the max
+		size of a row in intData
+ 
+---------------------------------------------------------------------------
+generateInitialNodes
+
+This function will generate the first level of nodes for the maximal clique
+enumeration. It will also determine the number of nodes generated.
+
+
+[in]:
+		structArray: A pointer to an array of graphNode structures, where the
+			generated nodes will be written to
+		intData: A pointer to the array of adjacency values
+		fixp: The id of the vertex/node that neighbours the most of other nodes
+
+[out]:
+		structArray will have all generated nodes written to it
+
+[return]:
+		initNodeCount: The count of nodes generated
+
+[notes]:
+		This function follows the recursive clique enumeration algorithm from
+			"A scalable, parallel algorithm for maximal clique enumeration"
+
+---------------------------------------------------------------------------
+maximalCliqueEnumeration
+
+This function will perform the algorithm to generate all maximal cliques.
+
+[in]:
+		structArray: Array of structs holding the first level of nodes, will
+			also be used to write future nodes to
+		initNodeCount: The initial size of struct array
+		intData: An array containing the initial input adjacency values
+		maxTileWidth: A calculated value based on shared memory limits to determine
+			how large out sizeKernels can be
+
+[out]:
+		Calls writeToFile to write out the cliques
+
+[return]:
+		Void
+		
+---------------------------------------------------------------------------
+printHelp
+
+Prints out all available command parameters, and a short description of each
+
+[in]:
+		None
+[out]:
+		A list and description of all command parameters
+
+[return]:
+		void
+
+---------------------------------------------------------------------------
+sizeKernel (GPU kernel function)
+
+This function will determine how many child nodes each input node will produce.
+Each thread handles one input node
+
+[in]:
+		nodes: A pointer to the array of input nodes
+		sizeArray: A pointer to the output array for the calculated sizes
+		maxNeighbours: The highest number of neighbours a node may have
+		workSize: The number of nodes in nodes to be operated on
+
+[out]:
+		Each thread will write the number of children its corresponding node
+			will produce to the thread id'th spot in sizeArray
+
+[return]:
+		Void
+		
+---------------------------------------------------------------------------
+writeToFile
+
+This function will write the compsub array values of all nodes
+that have empty cand and cnot arrays to cliques.txt
+
+[in]:
+		data: The array of graphNodes to potentially be written out
+		j: The current maximum size of a compsub array
+		out: An output stream for writing to the text file
+		workSize: Number of nodes in "data"
+
+[out]:
+		The compsubs of all finished nodes written to cliques.txt
+
+[return]:
+		Void
+
+[notes]:
+		If the first element of cand, cnot, or compsub are -1,
+			all elements are -1 in that respective array
+		-1's will not be written to the text file
+		
+---------------------------------------------------------------------------
